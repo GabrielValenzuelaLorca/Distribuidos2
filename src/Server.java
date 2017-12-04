@@ -52,14 +52,14 @@ public class Server extends UnicastRemoteObject implements Inter {
 
 
 
-    public void waitToken(int id1,int id2) throws RemoteException {
+    public void waitToken(int id2) throws RemoteException {
         DatagramSocket socket;
         DatagramPacket packet;
         byte[] buf;
         String envio;
         try {
             socket = new DatagramSocket();
-            envio =String.valueOf(id1)+";1";
+            envio ="1";
             buf = envio.getBytes();
             packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("127.0.0.1"), 4000+id2);
             socket.send(packet);
@@ -71,8 +71,8 @@ public class Server extends UnicastRemoteObject implements Inter {
         }
     }
 
-    public void takeToken(Token token) throws RemoteException{
-
+    public void takeToken(Token token, int id) throws RemoteException{
+        token.tomarToken(id);
     }
 
     public void sendToken(Token token, int id1,int id2) throws  RemoteException {

@@ -10,7 +10,7 @@ public class Token implements Serializable{
 
     static public int LN[];
 
-    int proxId;
+    int Poseedor;
 
     /* Constructor de la clase Token */
     public Token(int n){
@@ -21,7 +21,9 @@ public class Token implements Serializable{
             LN[i] = 0;
         }
     }
-
+    public void tomarToken(int id){
+        Poseedor=id;
+    }
     public void encolarProceso(int id){
         colaRequest.add(id);
     }
