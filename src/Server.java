@@ -34,10 +34,10 @@ public class Server extends UnicastRemoteObject implements Inter {
         }
 
 
-    public void request(int id) throws  RemoteException {
+    public void request(int id,int valor) throws  RemoteException {
 
         try{
-            buf = (String.valueOf(id)).getBytes();
+            buf = ((String.valueOf(id))+";"+(String.valueOf(valor))).getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length,ip_multi,puerto_multi);
             try{
                 socket.send(packet);
@@ -52,15 +52,72 @@ public class Server extends UnicastRemoteObject implements Inter {
 
 
 
-    public void waitToken(int id) throws RemoteException {
-
+    public void waitToken(int id1,int id2) throws RemoteException {
+        DatagramSocket socket;
+        DatagramPacket packet;
+        byte[] buf;
+        String envio;
+        try {
+            socket = new DatagramSocket();
+            envio =String.valueOf(id1)+";1";
+            buf = envio.getBytes();
+            packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("127.0.0.1"), 4000+id2);
+            socket.send(packet);
+            socket.close();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void takeToken(Token token) throws RemoteException{
 
     }
 
+    public void sendToken(Token token, int id1,int id2) throws  RemoteException {
+        DatagramSocket socket;
+        DatagramPacket packet;
+        byte[] buf;
+        String envio;
+        try {
+            socket = new DatagramSocket(4000 + id1);
+            envio = String.valueOf(id1) + ";2";
+            buf = envio.getBytes();
+            packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("127.0.0.1"), 4000 + id2);
+            socket.send(packet);
+            socket.close();
+            buf = new byte[256];
+            socket = new DatagramSocket(4000 + id1);
+            packet = new DatagramPacket(buf, buf.length);
+            socket.receive(packet);
+            socket.close();
+            //CEREAL//
+            ByteArrayOutputStream cereal = new ByteArrayOutputStream();
+            ObjectOutputStream output = new ObjectOutputStream(cereal);
+            output.writeObject(token);
+            output.close();
+            buf = cereal.toByteArray();
+            packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("127.0.0.1"), id2 + 4000);
+            socket.send(packet);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void kill() throws RemoteException {
+
+        try{
+            Naming.unbind("rmi://localhost:123/susuki");
+            UnicastRemoteObject.unexportObject(this, true);
+        }
+        catch(NotBoundException e){
+            e.printStackTrace();
+        }
+        catch(MalformedURLException e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -70,8 +127,8 @@ public class Server extends UnicastRemoteObject implements Inter {
         }
         System.out.println("[Servidor] Iniciando...");
         try {
-            Inter srv = new Server();
-            Naming.rebind("rmi://localhost:" + args[0] + "/SusukiKazami", srv);
+            Inter inter = new Server();
+            Naming.rebind("rmi://localhost:" + args[0] + "/susuki", inter);
             System.out.println("[Servidor] Listo!");
         }
         catch (RemoteException e) {
