@@ -25,31 +25,32 @@ public class Client {
     private InetAddress ip_multi;
     private int puerto_multi;
 
-    public Client(int id, int procesos, Boolean bearer){
+    public Client(int id, int procesos, Boolean bearer) {
         this.id = id;
-        this.cantidadProcesos = cantidadProcesos;
+        this.procesos = procesos;
         this.bearer = bearer;
         this.estado = 1;
 
-        RN = new int[cantidadProcesos];
-        for(int i=0; i< cantidadProcesos;i++){
+        RN = new int[procesos];
+        for (int i = 0; i < procesos; i++) {
             RN[i] = 0;
         }
 
         //AGUANTE MAURO
-        if(this.bearer){
-            this.token = new Token(cantidadProcesos);
-            this.haveToken = true;
+        if (this.bearer) {
+            this.token = new Token(procesos);
+            this.tienetoken = true;
 
-        }
-
-        else{
+        } else {
             this.token = null;
-            this.haveToken = false;
+            this.tienetoken = false;
 
         }
     }
 
+
     public static void main(String[] args) throws RemoteException {
+
+    }
 
 }
