@@ -24,7 +24,7 @@ public class Server extends UnicastRemoteObject implements Inter {
               haga la funcion request*/
 
             ip_multi = InetAddress.getByName("231.0.0.1");
-            puerto_multi = 4444;
+            puerto_multi = 9000;
             socket = new MulticastSocket(puerto_multi);
             socket.joinGroup(ip_multi);
             }catch(IOException e){
@@ -109,7 +109,7 @@ public class Server extends UnicastRemoteObject implements Inter {
     public void kill() throws RemoteException {
 
         try{
-            Naming.unbind("rmi://localhost:123/susuki");
+            Naming.unbind("rmi://localhost:12345/susuki");
             UnicastRemoteObject.unexportObject(this, true);
         }
         catch(NotBoundException e){

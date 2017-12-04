@@ -33,7 +33,6 @@ public class Client {
             RN[i] = 0;
         }
 
-        //AGUANTE MAURO
         if (this.bearer) {
             this.token = new Token(procesos);
             RN[id]++;
@@ -52,42 +51,39 @@ public class Client {
         byte[] buf;
 
         public void run() {
-            if(System.getSecurityManager() == null) {
+            if (System.getSecurityManager() == null) {
                 System.setSecurityManager(new SecurityManager());
             }
 
             try {
                 ip_multi = InetAddress.getByName("231.0.0.1");
-                puerto_multi = 4444;
+                puerto_multi = 9000;
                 multicastSocket = new MulticastSocket(puerto_multi);
                 multicastSocket.joinGroup(ip_multi);
-            }catch(IOException e){
-                System.err.println("Error");
-                e.printStackTrace();
+
+
+            while (true) {
+
+                DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                multicastSocket.receive(packet);
+
+                //Mensaje con el request//
+
+                String mensaje = new String(packet.getData(), packet.getOffset(), packet.getLength()).trim();
+                String[] partes = mensaje.split(";");
+                if (Integer.parseInt(partes[0]) != id && Integer.parseInt(partes[1]) > RN[Integer.parseInt(partes[0])]) {
+                    /*ó RN[Integer.parseInt(partes[0])]=Integer.parseInt(partes[1]);*/
+                    RN[Integer.parseInt(partes[0])]++;
+                }
             }
 
-            while(true){
-                try{
-
-                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                    multicastSocket.receive(packet);
-
-                    //Mensaje con el request//
-
-                    String mensaje = new String(packet.getData(),packet.getOffset(), packet.getLength()).trim();
-                    String[] partes=mensaje.split(";");
-                    if(Integer.parseInt(partes[0])!=id&&Integer.parseInt(partes[1])>RN[Integer.parseInt(partes[0])]){
-                        /*ó RN[Integer.parseInt(partes[0])]=Integer.parseInt(partes[1]);*/
-                        RN[Integer.parseInt(partes[0])]++;
-                    }
-                }
-                catch (IOException e){
-                    System.err.println("Excepcion: ");
-                    e.printStackTrace();
-                }
+        }   catch(IOException e){
+                System.err.println("Excepcion: ");
+                e.printStackTrace();
             }
         }
     }
+
 
     public static class main implements Runnable {
 
@@ -100,9 +96,9 @@ public class Client {
             byte[] buf;
             try{
 
-                Inter inter = (Inter) Naming.lookup("//localhost:123/susuki");
+                Inter inter = (Inter) Naming.lookup("//localhost:12345/susuki");
 
-                if(tienetoken == false){
+                if(!tienetoken){
 
                     ip_multi = InetAddress.getByName("127.0.0.1");
                     estado = 2;
@@ -133,14 +129,10 @@ public class Client {
                             paqueteuni = new DatagramPacket(buf, buf.length);
                             socketuni = new DatagramSocket(puerto_recept);
                             socketuni.receive(paqueteuni);
-                            try {
-                                ByteArrayInputStream cereal = new ByteArrayInputStream(buf);
-                                ObjectInputStream input = new ObjectInputStream(cereal);
-                                token = (Token) input.readObject();
-                                input.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            ByteArrayInputStream cereal = new ByteArrayInputStream(buf);
+                            ObjectInputStream input = new ObjectInputStream(cereal);
+                            token = (Token) input.readObject();
+                            input.close();
                         }
                     }
                     inter.takeToken(token,id);
@@ -203,12 +195,14 @@ public class Client {
 
 
     public static void main(String[] args) throws RemoteException {
-
-
-        Thread request = new Thread(new recepcion_request());
-        request.start();
-        Thread main = new Thread(new main());
-        main.start();
-
+        try {
+            System.out.println("Se inicio un cliente !");
+            Thread request = new Thread(new recepcion_request());
+            request.start();
+            Thread main = new Thread(new main());
+            main.start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
