@@ -14,12 +14,15 @@ public class Server extends UnicastRemoteObject implements Inter {
     public MulticastSocket socket;
     public InetAddress ip_multi;
     public int puerto_multi;
+    public byte[] buf;
+
 
     Server() throws RemoteException{
 
         try {
             /*Deberia ser necesario que este wn tambien este el multicast dependiendo de como se
               haga la funcion request*/
+
             ip_multi = InetAddress.getByName("231.0.0.1");
             puerto_multi = 4444;
             socket = new MulticastSocket(puerto_multi);
@@ -31,10 +34,23 @@ public class Server extends UnicastRemoteObject implements Inter {
         }
 
 
-    public void request(int id, int seq) throws  RemoteException {
+    public void request(int id) throws  RemoteException {
 
-
+        try{
+            buf = (String.valueOf(id)).getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length,ip_multi,puerto_multi);
+            try{
+                socket.send(packet);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
+
+
+
 
     public void waitToken(int id) throws RemoteException {
 
