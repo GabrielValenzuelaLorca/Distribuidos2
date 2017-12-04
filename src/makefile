@@ -1,7 +1,7 @@
 JFLAGS = -g 
 #-Xlint
 id=1
-n=1
+n=3
 bearer=true
 JC = javac
 JVM = java

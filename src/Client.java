@@ -21,30 +21,6 @@ public class Client {
     static private InetAddress ip_multi;
     static private int puerto_multi, puerto_recept;
 
-    public Client(int id, int procesos, Boolean bearer) {
-        this.id = id;
-        this.procesos = procesos;
-        this.bearer = bearer;
-        this.estado = 1;
-        this.puerto_recept=4000+id;
-
-        RN = new int[procesos];
-        for (int i = 0; i < procesos; i++) {
-            RN[i] = 0;
-        }
-
-        if (this.bearer) {
-            this.token = new Token(procesos);
-            RN[id]++;
-            token.LN[id]++;
-            this.tienetoken = true;
-
-        } else {
-            this.token = null;
-            this.tienetoken = false;
-
-        }
-    }
 
     public static class recepcion_request implements Runnable {
 
@@ -63,7 +39,7 @@ public class Client {
 
 
             while (true) {
-
+                buf = new byte[256];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 multicastSocket.receive(packet);
 
@@ -102,6 +78,7 @@ public class Client {
 
                     ip_multi = InetAddress.getByName("127.0.0.1");
                     estado = 2;
+                    System.out.println("SEMAFORO AMARILLO");
                     RN[id]++;
                     inter.request(id,RN[id]);
                     buf = new byte[256];
@@ -141,11 +118,15 @@ public class Client {
 
                 if(tienetoken){
                     estado = 3;
+                    System.out.println("SEMAFORO ROJO");
+
                     //Si, esta es la SC :D
 
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
 
                     estado = 1;
+                    System.out.println("SEMAFORO VERDE");
+
                     for (int i = 0; i < procesos; i++) {
                         if(RN[i]>token.LN[i]){
                             inter.waitToken(i);
@@ -170,7 +151,8 @@ public class Client {
                                     token.LN[i]=RN[i];
                                 }
                             }
-                            Thread.sleep(3000);
+                            Thread.sleep(5000);
+                            System.out.println("Estoy esperando amigos :c");
                         }
                         int proceso=token.desencolarProceso();
                         inter.sendToken(token, id, proceso);
@@ -195,6 +177,25 @@ public class Client {
 
 
     public static void main(String[] args) throws RemoteException {
+        id = Integer.parseInt(args[0])-1;
+        procesos = Integer.parseInt(args[1]);
+        bearer = Boolean.valueOf(args[2]);
+        estado = 1;
+        puerto_recept=4000+id;
+
+        RN = new int[procesos];
+        for (int i = 0; i < procesos; i++) {
+            RN[i] = 0;
+        }
+        token = null;
+        tienetoken = false;
+
+        if (bearer) {
+            token = new Token(procesos);
+            RN[id]++;
+            token.LN[id]++;
+            tienetoken = true;
+        }
         try {
             System.out.println("Se inicio un cliente !");
             Thread request = new Thread(new recepcion_request());
