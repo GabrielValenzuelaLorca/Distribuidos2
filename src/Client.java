@@ -41,13 +41,20 @@ public class Client {
                 multicastSocket = new MulticastSocket(puerto_multi);
                 multicastSocket.joinGroup(ip_multi);
 
-
             while (true) {
                 buf = new byte[256];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 multicastSocket.receive(packet);
 
                 //Mensaje con el request//
+
+                String cadenaRN="RN = [";
+                for (int i=0;i<RN.length;i++){
+                    cadenaRN=cadenaRN+String.valueOf(RN[i])+" ";
+                }
+                cadenaRN=cadenaRN+"]";
+                logger.info(cadenaRN);
+
 
                 String mensaje = new String(packet.getData(), packet.getOffset(), packet.getLength()).trim();
                 String[] partes = mensaje.split(";");
@@ -249,8 +256,21 @@ public class Client {
         }
 
         try {
-            logger.info("WENA CHOREEEE");
-            logger.info(String.valueOf(RN));
+            String cadenaRN="RN = [",cadenaLN="LN = [";
+            for (int i=0;i<RN.length;i++){
+                cadenaRN=cadenaRN+String.valueOf(RN[i])+" ";
+            }
+            cadenaRN=cadenaRN+"]";
+            logger.info(cadenaRN);
+
+            if (tienetoken){
+                for (int i=0;i<token.LN.length;i++){
+                    cadenaLN=cadenaLN+String.valueOf(token.LN[i])+" ";
+                }
+                cadenaLN=cadenaLN+"]";
+                logger.info(cadenaLN);
+            }
+
             logger.info("SEMAFORO VERDE, INICIA EL CLIENTE "+ (id+1));
 
             System.out.println("Se inicio un cliente !");
