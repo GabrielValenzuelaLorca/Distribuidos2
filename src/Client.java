@@ -178,6 +178,11 @@ public class Client {
                         System.exit(0);
                     }
                     else{
+                        if(token.desencolados==procesos-1){
+                            inter.kill();
+                            System.out.println("TERMINE");
+                            System.exit(0);
+                        }
                         while(token.colaRequest.isEmpty()){
                             for (int i = 0; i < procesos; i++) {
                                 if(RN[i]>token.LN[i]){

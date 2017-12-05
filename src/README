@@ -20,8 +20,11 @@ Instrucciones de ejecución:
 
 	-Luego de que el servidor esté listo, se debe iniciar un cliente con:
 
-	make run MAIN=Client id=ID DEL MEN PARTIENDO DE 1 n=NUMERO DE MENES QUE HAY initialdelay=DELAY INICIAL ANTES DE HACER REQUEST(en MILISEGUNDOS) bearer=true or false
+	make run MAIN=Client id=VALOR 1 n=VALOR initialdelay=VALOR(ms) bearer=true or false
 
 	por defecto se usará el puerto 12345 para modificarlo agregar a lo anterior PUERTO=puerto_rmi
 	también se utiliza un archivo de permisos llamado "permisos" para modificarlo utilizar ARCHIVO=archivo_permisos
 	también se conecta por defecto a la dirección localhost para cambiarla utilizar DIRECCION=nueva_direccion
+
+
+//Nos falto tiempo para implementar target en el make :(

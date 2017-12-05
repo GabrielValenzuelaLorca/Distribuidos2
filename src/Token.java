@@ -11,6 +11,7 @@ public class Token implements Serializable{
     public int LN[];
 
     public int Poseedor;
+    public int desencolados;
 
     /* Constructor de la clase Token */
     public Token(int n){
@@ -30,6 +31,7 @@ public class Token implements Serializable{
     }
 
     public int desencolarProceso(){
+        desencolados++;
         return colaRequest.poll();
     }
 }
