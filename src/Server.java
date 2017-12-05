@@ -63,7 +63,6 @@ public class Server extends UnicastRemoteObject implements Inter {
             buf = envio.getBytes();
             packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("127.0.0.1"), 4000+id2);
             socket.send(packet);
-            socket.close();
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -76,30 +75,43 @@ public class Server extends UnicastRemoteObject implements Inter {
     }
 
     public void sendToken(Token token, int id1,int id2) throws  RemoteException {
+        System.out.println("ENTRE AL SENDTOKEN AHHHHHHHHHHHHHHHHHHHHHHHH");
         DatagramSocket socket;
         DatagramPacket packet;
+        System.out.println("valor de LN al momento de enviar: "+token.LN[1]);
         byte[] buf;
         String envio;
         try {
-            socket = new DatagramSocket(4000 + id1);
+
+            //Se envia un mensaje avisando que se enviara el token
+
+            socket = new DatagramSocket(5000 + id1);
             envio = String.valueOf(id1) + ";2";
             buf = envio.getBytes();
             packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("127.0.0.1"), 4000 + id2);
+            System.out.println("Se envia el primer send");
             socket.send(packet);
-            socket.close();
+
+            //Se espera respuesta
+
             buf = new byte[256];
-            socket = new DatagramSocket(4000 + id1);
             packet = new DatagramPacket(buf, buf.length);
             socket.receive(packet);
-            socket.close();
-            //CEREAL//
+
+            //Se serializa el token y se manda
+            System.out.println("INICIA SERIAL");
             ByteArrayOutputStream cereal = new ByteArrayOutputStream();
             ObjectOutputStream output = new ObjectOutputStream(cereal);
             output.writeObject(token);
             output.close();
+
             buf = cereal.toByteArray();
-            packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("127.0.0.1"), id2 + 4000);
+            packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("127.0.0.1"), 4000 +id2);
             socket.send(packet);
+
+            System.out.println("Se envio el token!");
+
+
         }catch (IOException e) {
             e.printStackTrace();
         }

@@ -8,13 +8,14 @@ public class Token implements Serializable{
 
     Queue<Integer> colaRequest;
 
-    static public int LN[];
+    public int LN[];
 
-    int Poseedor;
+    public int Poseedor;
 
     /* Constructor de la clase Token */
     public Token(int n){
         colaRequest = new LinkedList();
+        Poseedor=0;
 
         LN = new int[n];
         for (int i = 0; i < n; i++) {

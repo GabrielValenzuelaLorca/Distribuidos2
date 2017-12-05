@@ -1,17 +1,6 @@
 Integrantes:
-	-Catherin Vargas	201373542-8
-	-Fernanda Weiss		201373536-
-
-Supuestos:
-	-Cada cliente está en solo una cola a la vez
-	-Los mensajes son encolados en una cola principal, por lo que al suscribirse se reciben los mensajes desde el principio
-
-Estrategia de implementación:
-	-Se publica el servicio SimpleMoM
-	-El servidor tiene un archivo colas.txt donde cada linea es una cola de mensajes
-	-El cliente se registra y se suscribe a una cola
-	-El cliente puede enviar mensajes que serán copiados en su cola personal como en la cola principal
-	-Al recibir los mensajes solo se hace desde su cola principal
+	-Gabriel Valenzuela
+	-Giorgio Pellizzari
 
 Instrucciones de ejecución:
 	-Se debe iniciar el servicio rmi en el equipo con:
@@ -29,9 +18,9 @@ Instrucciones de ejecución:
 	por defecto se usará el puerto 12345 para modificarlo agregar a lo anterior PUERTO=puerto_rmi
 	tambien se utiliza un archivo de permisos llamado "permisos" para modificarlo utilizar ARCHIVO=archivo_permisos
 
-	-Luego de que el servidor esté listo, se debe iniciar el cliente con:
+	-Luego de que el servidor esté listo, se debe iniciar un cliente con:
 
-		make run MAIN=Client
+	make run MAIN=Client id=ID DEL MEN PARTIENDO DE 1 n=NUMERO DE MENES QUE HAY initialdelay=DELAY INICIAL ANTES DE HACER REQUEST(en MILISEGUNDOS) bearer=true or false
 
 	por defecto se usará el puerto 12345 para modificarlo agregar a lo anterior PUERTO=puerto_rmi
 	también se utiliza un archivo de permisos llamado "permisos" para modificarlo utilizar ARCHIVO=archivo_permisos

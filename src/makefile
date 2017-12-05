@@ -1,14 +1,15 @@
 JFLAGS = -g 
 #-Xlint
 id=1
-n=3
+n=4
 bearer=true
 JC = javac
 JVM = java
 PUERTO = 12345
 POLITICA = -Djava.security.policy
 ARCHIVO = permisos
-DIRECCION = localhost
+initialdelay=5000
+
 
 .SUFFIXES: .java .class
 .java.class:
@@ -28,7 +29,7 @@ classes: $(CLASSES:.java=.class)
 
 run: classes	
 ifeq ($(MAIN),Client)
-	$(JVM) $(POLITICA)=$(ARCHIVO) $(MAIN) $(id) $(n) $(bearer)
+	$(JVM) $(POLITICA)=$(ARCHIVO) $(MAIN) $(id) $(n) $(initialdelay) $(bearer)
 else
 	$(JVM) $(POLITICA)=$(ARCHIVO) $(MAIN) $(PUERTO) 
 endif	
